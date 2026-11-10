@@ -10999,6 +10999,11 @@ An entry without `collected_via` is valid. A bare value in place of an entry, a
 submission-level `collected_via` map, an entry without `value`, or any other
 `collected_via` value fails the schema
 ([`bq-schema-submission-answers`](tests/vectors/wire/bq-schema-submission-answers.json)).
+A business **MUST** reject that request as a `validation_error` protocol error
+([Section 9.4.3](#943-protocol-errors)). The question-level outcome codes in
+[Section 11.4.9](#1149-error-codes), including
+`booking_question_answer_missing`, apply only after the submission matches this
+schema.
 
 `booking_question_submissions[]` travels on the eligibility check, Create and
 Update Booking, and (inside `booking`) UCP Create and Update Checkout

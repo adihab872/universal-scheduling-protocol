@@ -141,7 +141,7 @@
     {
       "behaviour": "send bare values plus a parallel collected_via map",
       "violates": "11.4.5 Request Submission",
-      "why": "The business rejects the whole submission as schema-invalid instead of validating the answers."
+      "why": "The business rejects the request as a validation_error. Question-level outcome codes apply only after the submission matches the schema."
     },
     {
       "behaviour": "treat an entry without collected_via as invalid",

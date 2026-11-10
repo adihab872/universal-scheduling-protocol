@@ -318,6 +318,12 @@ proves the buyer saw or accepted anything.
 }
 ```
 
+An entry may omit `collected_via`. A bare value, a submission-level
+`collected_via` map, an entry without `value`, or any other `collected_via`
+value fails the schema. The business rejects that request as a
+`validation_error`. Question-level outcome codes apply only after the
+submission matches this shape.
+
 The business echoes non-sensitive state in `booking_question_state[]` with
 `status` `pending`, `completed`, `expired`, `waived`, `extended`,
 `under_review`, or `rejected`. The echo's `answers` maps each question id to
