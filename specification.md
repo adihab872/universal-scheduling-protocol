@@ -180,7 +180,6 @@ the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
     - [14.2 Informative References](#142-informative-references)
 - [Appendix A. Future Vertical Considerations (Informative)](#appendix-a-future-vertical-considerations-informative)
 - [Appendix B. Namespace Authority Migration (Informative)](#appendix-b-namespace-authority-migration-informative)
-- [Appendix C. Booking Questions 2026-08-20 Submission Shape](#appendix-c-booking-questions-2026-08-20-submission-shape)
 - [Authors' Addresses](#authors-addresses)
 
 ---
@@ -10594,7 +10593,7 @@ extension stays active for checkout while catalog-surface fields are pruned
 {
   "dev.usp-protocol.services.booking_questions": [
     {
-      "version": "2026-11-10",
+      "version": "2026-08-20",
       "extends": [
         "dev.usp-protocol.services.catalog",
         "dev.usp-protocol.services.availability",
@@ -10607,15 +10606,6 @@ extension stays active for checkout while catalog-surface fields are pruned
   ]
 }
 ```
-
-**Version `2026-11-10`.** This version carries each answer and its provenance
-in one entry per question ([Section 11.4.5](#1145-request-submission)). It is a
-breaking change from `2026-08-20`, which carried them in two parallel maps keyed
-by question id, `answers` and `collected_via`. A business that also serves
-platforms on `2026-08-20` declares both versions and processes each request
-under the semantics of the version negotiated for it
-([Section 8.4](#84-versioning)). The `2026-08-20` submission shape is defined in
-[Appendix C](#appendix-c-booking-questions-2026-08-20-submission-shape).
 
 Every optional field the extension adds is schema-valid when the extension is
 not negotiated. Negotiation alone gives those fields semantics. For a platform
@@ -11659,39 +11649,6 @@ URIs in one coordinated release.
 
 The old identifiers in this table are historical migration information only.
 They are not valid aliases in the `2026-08-20` protocol version.
-
----
-
-## Appendix C. Booking Questions 2026-08-20 Submission Shape
-
-This appendix defines the `BookingQuestionSubmission` shape for
-`dev.usp-protocol.services.booking_questions` version `2026-08-20`. A business
-that negotiates `2026-08-20` with a platform accepts this shape from that
-platform. Every other rule in [Section 11.4](#114-booking-questions-extension),
-including the [Section 11.4.9](#1149-error-codes) paths, is the same in both
-versions.
-
-| Field           | Type   | Required    | Description |
-|-----------------|--------|-------------|-------------|
-| `set_id`        | string | **Yes**     | As in [Section 11.4.5](#1145-request-submission). |
-| `revision`      | string | **Yes**     | As in [Section 11.4.5](#1145-request-submission). |
-| `answers`       | object | **Yes**     | Map of question id to a bare typed value (string, number, boolean, or array of option values), with no entry wrapper. External tasks never appear here. |
-| `collected_via` | object | No          | Map of question id to `conversation` or `platform_surface`. A provenance claim only, never independently sufficient evidence that the buyer saw or accepted anything. |
-| `action_id`     | string | Conditional | As in [Section 11.4.5](#1145-request-submission). |
-
-`answers[<id>]` in this shape corresponds to `answers[<id>].value` in
-`2026-11-10`, and `collected_via[<id>]` corresponds to
-`answers[<id>].collected_via`.
-
-```json
-{
-  "set_id": "intake",
-  "revision": "r1",
-  "answers": { "hair_length": "long", "no_show_fee": true },
-  "collected_via": { "hair_length": "conversation", "no_show_fee": "platform_surface" },
-  "action_id": "act_bq_1"
-}
-```
 
 ---
 

@@ -206,7 +206,6 @@ The checkout total is the full price, because UCP requires the selected term's s
 ## Booking Questions Extension
 
 **Capability:** `dev.usp-protocol.services.booking_questions`  
-**Version:** `2026-11-10`  
 **Extends:** `dev.usp-protocol.services.catalog`, `dev.usp-protocol.services.availability`, `dev.usp-protocol.services.bookings`, `dev.usp-protocol.services.paid_bookings`  
 **Schema:** [`booking_questions.json`](https://usp-protocol.dev/schemas/services/booking_questions.json)  
 **Normative text:** [Specification Section 11.4](specification/index.md#booking-questions-extension)
@@ -221,14 +220,6 @@ negotiated, and each field is valid only on a surface whose own parent is
 active. A business **MUST NOT** emit any booking-questions outcome code to a
 platform that did not negotiate the extension; it uses business-surface handoff
 or the existing error family instead.
-
-Version `2026-11-10` is a breaking change from `2026-08-20`: each answer and its
-provenance now travel in one entry per question instead of two parallel maps
-keyed by question id. A business that also serves `2026-08-20` platforms
-declares both versions and applies the negotiated version's semantics to each
-request. In `2026-08-20`, `answers` maps each question id to a bare value and a
-separate `collected_via` map carries provenance; every other rule is the same.
-Appendix C of the specification defines that shape.
 
 ### Question sets
 

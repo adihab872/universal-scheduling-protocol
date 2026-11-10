@@ -9,7 +9,7 @@
   ],
   "expect": "accept",
   "schema": "booking_questions.json#/$defs/BookingQuestionSubmissions",
-  "notes": "Each question id maps to one answer entry carrying the typed value and the optional collected_via provenance claim. A bare value, a separate collected_via map, an entry without value, or an unknown provenance is not a 2026-11-10 submission.",
+  "notes": "Each question id maps to one answer entry carrying the typed value and the optional collected_via provenance claim. A bare value, a separate collected_via map, an entry without value, or an unknown provenance is not a submission.",
   "case": "entries with provenance",
   "instance": [
     {
@@ -139,7 +139,7 @@
   ],
   "wrong_answers": [
     {
-      "behaviour": "send the 2026-08-20 shape, bare values plus a parallel collected_via map, to a business on 2026-11-10",
+      "behaviour": "send bare values plus a parallel collected_via map",
       "violates": "11.4.5 Request Submission",
       "why": "The business rejects the whole submission as schema-invalid instead of validating the answers."
     },

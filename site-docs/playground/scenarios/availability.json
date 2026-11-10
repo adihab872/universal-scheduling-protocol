@@ -602,7 +602,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-11-10"
+                "version": "2026-08-20"
               }
             ]
           }
@@ -685,7 +685,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-11-10"
+                "version": "2026-08-20"
               }
             ]
           }
