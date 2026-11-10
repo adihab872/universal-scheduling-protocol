@@ -226,7 +226,9 @@ Version `2026-11-10` is a breaking change from `2026-08-20`: each answer and its
 provenance now travel in one entry per question instead of two parallel maps
 keyed by question id. A business that also serves `2026-08-20` platforms
 declares both versions and applies the negotiated version's semantics to each
-request.
+request. In `2026-08-20`, `answers` maps each question id to a bare value and a
+separate `collected_via` map carries provenance; every other rule is the same.
+Appendix C of the specification defines that shape.
 
 ### Question sets
 
@@ -327,8 +329,9 @@ proves the buyer saw or accepted anything.
 
 The business echoes non-sensitive state in `booking_question_state[]` with
 `status` `pending`, `completed`, `expired`, `waived`, `extended`,
-`under_review`, or `rejected`. `before_service` sets live there, never in
-`Booking.actions`.
+`under_review`, or `rejected`. The echo's `answers` maps each question id to
+the accepted bare value, without the submission's entry wrapper.
+`before_service` sets live there, never in `Booking.actions`.
 
 The extension declares one Action type,
 `dev.usp-protocol.services.booking_questions.buyer_input`, with `config`

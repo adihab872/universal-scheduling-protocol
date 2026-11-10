@@ -1,5 +1,14 @@
 # Change Log
 
+## 10/11/26 at 11:47:59 by [adihab872](mailto:adihab@wix.com)
+
+- Stated in Section 11.4.6 and the `BookingQuestionState.answers` schema description that the state echo maps each question id to the accepted bare value, without the submission's answer entry wrapper. Submission and echo both name the field `answers` but now differ in shape, and the old wording left implementers to guess which one the echo follows
+- Added Appendix C, which defines the `2026-08-20` booking-question submission shape and how it maps to `2026-11-10` entries, and linked it from the Section 11.4.2 versioning note. Without it, the note told a business to keep serving `2026-08-20` while the only canonical schema described the new shape
+- Added the `bq-schema-submission-answers` wire vector. It accepts entries with and without `collected_via`, and rejects bare values, a submission-level `collected_via` map, an entry without `value`, and an unknown provenance, so the schema checks that were run by hand become regression coverage
+- Mirrored the echo shape and the `2026-08-20` summary on the extensions page
+
+---
+
 ## 10/11/26 at 11:25:05 by [adihab872](mailto:adihab@wix.com)
 
 - Proposed merging a booking-question submission's two parallel maps, `answers` (question id to value) and `collected_via` (question id to provenance), into one `answers` object whose entries are `{value, collected_via?}`. Each question id now appears once, so a value and its provenance cannot drift apart or name different questions. Added `$defs/BookingQuestionAnswer` in `schemas/booking_questions.json` and the matching table and example in Section 11.4.5; the REST and MCP bindings already reference the submission `$def` and did not change

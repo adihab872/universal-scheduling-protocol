@@ -1384,7 +1384,7 @@
           "additionalProperties": {
             "$ref": "#/$defs/BookingQuestionAnswerValue"
           },
-          "description": "Non-sensitive accepted answer echo."
+          "description": "Non-sensitive accepted answer echo: map of question id to the accepted typed value, without the submission's answer entry wrapper."
         }
       },
       "allOf": [
