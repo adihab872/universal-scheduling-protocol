@@ -10593,7 +10593,7 @@ extension stays active for checkout while catalog-surface fields are pruned
 {
   "dev.usp-protocol.services.booking_questions": [
     {
-      "version": "2026-08-20",
+      "version": "2026-11-10",
       "extends": [
         "dev.usp-protocol.services.catalog",
         "dev.usp-protocol.services.availability",
@@ -10606,6 +10606,14 @@ extension stays active for checkout while catalog-surface fields are pruned
   ]
 }
 ```
+
+**Version `2026-11-10`.** This version carries each answer and its provenance
+in one entry per question ([Section 11.4.5](#1145-request-submission)). It is a
+breaking change from `2026-08-20`, which carried them in two parallel maps keyed
+by question id, `answers` and `collected_via`. A business that also serves
+platforms on `2026-08-20` declares both versions and processes each request
+under the semantics of the version negotiated for it
+([Section 8.4](#84-versioning)).
 
 Every optional field the extension adds is schema-valid when the extension is
 not negotiated. Negotiation alone gives those fields semantics. For a platform
@@ -10968,9 +10976,32 @@ with unresolved required preflight eligibility.
 |-----------------|--------|-------------|-------------|
 | `set_id`        | string | **Yes**     | The set being answered. |
 | `revision`      | string | **Yes**     | The revision the answers were collected against. |
-| `answers`       | object | **Yes**     | Map of question id to typed value (string, number, boolean, or array of option ids). External tasks never appear here. |
-| `collected_via` | object | No          | Map of question id to `conversation` or `platform_surface`. A provenance claim only, never independently sufficient evidence that the buyer saw or accepted anything. |
+| `answers`       | object | **Yes**     | Map of question id to that question's BookingQuestionAnswer entry. Each question id appears at most once. External tasks never appear here. |
 | `action_id`     | string | Conditional | **REQUIRED** when the submission processes an outstanding buyer-input Action. |
+
+> **JSON Schema:** [/$defs/BookingQuestionAnswer](schemas/booking_questions.json)
+
+| Field           | Type   | Required | Description |
+|-----------------|--------|----------|-------------|
+| `value`         | string \| number \| boolean \| Array\[string\] | **Yes** | The typed answer: a string, number, boolean, or array of option values. The business validates it against the question's `schema`. |
+| `collected_via` | string | No       | `conversation` or `platform_surface`: where the platform collected the value. A provenance claim only, never independently sufficient evidence that the buyer saw or accepted anything. |
+
+```json
+{
+  "booking_question_submissions": [
+    {
+      "set_id": "intake",
+      "revision": "r1",
+      "answers": {
+        "hair_length": { "value": "long", "collected_via": "conversation" },
+        "allergies": { "value": ["none"], "collected_via": "conversation" },
+        "no_show_fee": { "value": true, "collected_via": "platform_surface" }
+      },
+      "action_id": "act_bq_1"
+    }
+  ]
+}
+```
 
 `booking_question_submissions[]` travels on the eligibility check, Create and
 Update Booking, and (inside `booking`) UCP Create and Update Checkout
@@ -11186,7 +11217,9 @@ request.
 
 **Paths.** `path` is bracket-form RFC 9535 JSONPath naming both set and question,
 for example
-`$.booking_question_submissions[?@.set_id=='intake'].answers['allergies']`.
+`$.booking_question_submissions[?@.set_id=='intake'].answers['allergies']`. A
+question-level path selects that question's answer entry
+([Section 11.4.5](#1145-request-submission)), not its `value` member.
 A business **MAY** use a set-level path
 (`$.booking_question_submissions[?@.set_id=='intake']`) only when it cannot
 attribute a failure to one question; a business that can identify the question

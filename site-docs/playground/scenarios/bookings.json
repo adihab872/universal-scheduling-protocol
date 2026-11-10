@@ -340,7 +340,7 @@
             "set_id": "kids_eligibility",
             "revision": "r1",
             "answers": {
-              "participant_birth_date": "2023-06-01"
+              "participant_birth_date": { "value": "2023-06-01" }
             }
           }
         ]
@@ -359,7 +359,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-08-20"
+                "version": "2026-11-10"
               }
             ]
           }
@@ -394,7 +394,7 @@
             "set_id": "color_config",
             "revision": "r2",
             "answers": {
-              "hair_length": "long"
+              "hair_length": { "value": "long" }
             }
           }
         ]
@@ -413,7 +413,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-08-20"
+                "version": "2026-11-10"
               }
             ]
           }
@@ -446,11 +446,8 @@
             "set_id": "massage_intake",
             "revision": "r3",
             "answers": {
-              "allergies": [
-                "none",
-                "other"
-              ],
-              "no_show_fee": true
+              "allergies": { "value": ["none", "other"] },
+              "no_show_fee": { "value": true }
             }
           }
         ]
@@ -469,7 +466,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-08-20"
+                "version": "2026-11-10"
               }
             ]
           }
@@ -513,10 +510,8 @@
             "set_id": "massage_intake",
             "revision": "r3",
             "answers": {
-              "allergies": [
-                "lavender"
-              ],
-              "medical_conditions": "provided"
+              "allergies": { "value": ["lavender"] },
+              "medical_conditions": { "value": "provided" }
             }
           }
         ]
@@ -535,7 +530,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-08-20"
+                "version": "2026-11-10"
               }
             ]
           }
@@ -630,10 +625,8 @@
             "set_id": "massage_intake",
             "revision": "r3",
             "answers": {
-              "allergies": [
-                "none"
-              ],
-              "no_show_fee": true
+              "allergies": { "value": ["none"] },
+              "no_show_fee": { "value": true }
             },
             "action_id": "act_bq_1"
           }
@@ -653,7 +646,7 @@
             ],
             "dev.usp-protocol.services.booking_questions": [
               {
-                "version": "2026-08-20"
+                "version": "2026-11-10"
               }
             ]
           }

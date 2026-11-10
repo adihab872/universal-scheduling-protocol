@@ -508,6 +508,12 @@ def _question_path(prefix: str, set_id: str, qid: str) -> str:
     return f"{_set_path(prefix, set_id)}.answers['{qid}']"
 
 
+def submitted_values(sub: dict) -> dict:
+    """Question id to typed value, unwrapped from a submission's answer entries."""
+    return {qid: entry.get("value") for qid, entry in (sub.get("answers") or {}).items()
+            if isinstance(entry, dict)}
+
+
 def derive_messages(service: dict, step: dict, history: list[dict] | None = None) -> list[tuple[str, str]]:
     """``(code, path)`` pairs a conforming business returns for one request.
 
@@ -557,7 +563,7 @@ def derive_messages(service: dict, step: dict, history: list[dict] | None = None
                     continue
             answers = {}
         else:
-            answers = dict(sub.get("answers", {}))
+            answers = submitted_values(sub)
 
         acting = sub is not None and "action_id" in sub
         by_id = {i.get("id"): i for i in qset.get("items", [])}
@@ -717,7 +723,7 @@ def flow_case_problems(case: dict, outcome_codes: set[str]) -> list[tuple[str, s
     secrets = set()
     for step in _steps(case):
         for sub in step.get("with", {}).get("booking_question_submissions", []) or []:
-            for qid, value in (sub.get("answers") or {}).items():
+            for qid, value in submitted_values(sub).items():
                 if qid in sensitive:
                     secrets.update(s for s in _strings(value) if len(s) >= 3)
     outputs = [case.get("then")] + [s.get("result") for s in _steps(case)]
@@ -1027,7 +1033,7 @@ def _invariant_problems(name: str, case: dict, derived: dict) -> str | None:
         values = set()
         for step in steps:
             for sub in step.get("with", {}).get("booking_question_submissions", []) or []:
-                values.update(s for s in _strings(sub.get("answers", {})) if len(s) >= 3)
+                values.update(s for s in _strings(submitted_values(sub)) if len(s) >= 3)
         rendered = json.dumps(derived.get("rejections", []), ensure_ascii=False)
         if any(v in rendered for v in values):
             return "a message echoes a submitted answer value"

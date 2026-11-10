@@ -206,6 +206,7 @@ The checkout total is the full price, because UCP requires the selected term's s
 ## Booking Questions Extension
 
 **Capability:** `dev.usp-protocol.services.booking_questions`  
+**Version:** `2026-11-10`  
 **Extends:** `dev.usp-protocol.services.catalog`, `dev.usp-protocol.services.availability`, `dev.usp-protocol.services.bookings`, `dev.usp-protocol.services.paid_bookings`  
 **Schema:** [`booking_questions.json`](https://usp-protocol.dev/schemas/services/booking_questions.json)  
 **Normative text:** [Specification Section 11.4](specification/index.md#booking-questions-extension)
@@ -220,6 +221,12 @@ negotiated, and each field is valid only on a surface whose own parent is
 active. A business **MUST NOT** emit any booking-questions outcome code to a
 platform that did not negotiate the extension; it uses business-surface handoff
 or the existing error family instead.
+
+Version `2026-11-10` is a breaking change from `2026-08-20`: each answer and its
+provenance now travel in one entry per question instead of two parallel maps
+keyed by question id. A business that also serves `2026-08-20` platforms
+declares both versions and applies the negotiated version's semantics to each
+request.
 
 ### Question sets
 
@@ -299,9 +306,25 @@ business's `eligible` decision as eligibility.
 ### Submissions, state, and the buyer-input Action
 
 Answers travel as `booking_question_submissions[]`
-(`{set_id, revision, answers, collected_via?, action_id?}`) on the eligibility
-check, Create and Update Booking, and inside `booking` on UCP Create and Update
-Checkout, where every still-applicable submission is resent on every Update.
+(`{set_id, revision, answers, action_id?}`) on the eligibility check, Create and
+Update Booking, and inside `booking` on UCP Create and Update Checkout, where
+every still-applicable submission is resent on every Update. `answers` maps each
+question id, at most once, to one entry `{value, collected_via?}`: the typed
+value, and `conversation` or `platform_surface` as a provenance claim that never
+proves the buyer saw or accepted anything.
+
+```json
+{
+  "set_id": "intake",
+  "revision": "r1",
+  "answers": {
+    "hair_length": { "value": "long", "collected_via": "conversation" },
+    "no_show_fee": { "value": true, "collected_via": "platform_surface" }
+  },
+  "action_id": "act_bq_1"
+}
+```
+
 The business echoes non-sensitive state in `booking_question_state[]` with
 `status` `pending`, `completed`, `expired`, `waived`, `extended`,
 `under_review`, or `rejected`. `before_service` sets live there, never in
@@ -323,7 +346,8 @@ active.
 Carried in `messages[]` with HTTP 200, one message per failure, with
 `required_buyer_fields` failures first and then set and item order. Paths are
 bracket-form RFC 9535 JSONPath, for example
-`$.booking_question_submissions[?@.set_id=='intake'].answers['allergies']`.
+`$.booking_question_submissions[?@.set_id=='intake'].answers['allergies']`,
+which selects that question's answer entry.
 
 | Code | Meaning |
 |---|---|
